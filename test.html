@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+    <div id="root"></div>
+    <script src='./test.js'></script>
+    <script> 
+        let root = document.querySelector('#root')
+        const optionsJSON = [];
+        cityJson.map(item => {  //获取省
+            let obj={};
+            if(item.item_code.indexOf('0000') !== -1){
+                obj.value = item.item_code;
+                obj.label = item.item_name;
+                obj.children = [];
+                optionsJSON.push(obj)
+            }
+        })
+
+        optionsJSON.map(item => {  //城市
+            const sreachstring = item.value.substring(0,2);
+            cityJson.map(cities => {
+                let obj = {}
+                if(sreachstring === cities.item_code.substring(0,2) && cities.item_code.substring(4,6) == '00' && cities.item_code.indexOf('0000') === -1){
+                    obj.value = cities.item_code;
+                    obj.label = cities.item_name;
+                    obj.children = [];
+                    item.children.push(obj);
+                }
+            })
+        })
+
+        optionsJSON.map(item => { //县、区
+            item.children.map(cities => {
+                const sreachstring = cities.value.substring(2,4);
+                const srach = cities.value.substring(0,2);
+                cityJson.map(districts => {
+                    let obj = {} 
+                    if(sreachstring === districts.item_code.substring(2,4) && srach === districts.item_code.substring(0,2) && districts.item_code.substring(4,6) !==  '00'){
+                        obj.value = districts.item_code;
+                        obj.label = districts.item_name;
+                        cities.children.push(obj)
+                    }
+                })
+            })
+        })
+
+        // console.log(optionsJSON)
+        root.innerHTML = JSON.stringify(optionsJSON)
+    </script>
+</html>

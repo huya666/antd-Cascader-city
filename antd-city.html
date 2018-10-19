@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="./test.js"></script>
+    <script type="text/javascript" src="pinyin_dict_notone.js"></script>
+    <script type="text/javascript" src="pinyinUtil.js"></script>
+    <script>
+        let root = document.querySelector('#root')
+        let cityJSON = [];
+        cities.map(item => {
+            let obj = {};
+            obj.value = titleCase(pinyinUtil.getPinyin(item.name));
+            obj.label = item.name;
+            obj.children = []
+            cityJSON.push(obj)
+        })
+        cityJSON.map(item => {
+            cities.map(itemcities => {
+                if(item.label == itemcities.name){
+                    itemcities.city.map(itemcitychild => {
+                        let obj = {};
+                        obj.value = titleCase(pinyinUtil.getPinyin(itemcitychild.name));
+                        obj.label = itemcitychild.name;
+                        obj.children = []
+                        item.children.push(obj)
+                    })
+                }
+
+            })
+        })
+
+        cityJSON.map(item => {
+            item.children.map(itemcities => {
+                cities.map(itemcitiescity => {
+                    if(item.label == itemcitiescity.name ){
+                        itemcitiescity.city.map(itemitemcitiescity => {
+                            if( itemcities.label == itemitemcitiescity.name){
+                                itemitemcitiescity.area.map(itemend => {
+                                    let obj = {};
+                                    obj.value = titleCase(pinyinUtil.getPinyin(itemend));
+                                    obj.label = itemend;
+                                    itemcities.children.push(obj)
+                                })
+                            }
+                        })
+                    }
+                })
+            })
+        })
+
+        function titleCase(str) { //首字母变大写
+            var array = str.toLowerCase().split(" ");
+            for (var i = 0; i < array.length; i++){
+                array[i] = array[i][0].toUpperCase() + array[i].substring(1, array[i].length);
+            }
+            var string = array.join(" ");
+            return string;
+        }
+        root.innerHTML = JSON.stringify(cityJSON)
+    </script>
+</body>
+</html>
